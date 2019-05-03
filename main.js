@@ -25,6 +25,10 @@ function createWindow() {
   // and load the index.html of the app.
   mainWindow.loadFile('index.html');
 
+  mainWindow.webContents.on('new-window', function(e, url) {
+    e.preventDefault();
+    require('electron').shell.openExternal(url);
+  });
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
@@ -57,3 +61,12 @@ app.on('activate', function() {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+const { ipcMain } = require('electron');
+
+ipcMain.on('ondragstart', (event, filePath) => {
+  event.sender.startDrag({
+    file: filePath,
+    icon: '/path/to/icon.png',
+  });
+});
